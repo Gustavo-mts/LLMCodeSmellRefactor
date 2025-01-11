@@ -86,8 +86,6 @@ public class StudyMaterial{
 
     public List<String> searchWithLog(String text, SearchLog searchLog) {
         List<String> results = searchInMaterials(text);
-        searchLog.logSearch(text);
-        results.add("\nLogged in: " + searchLog.getLogName());
-        return results;
+        return searchLog.appendLogDetails(results, text);
     }
 }

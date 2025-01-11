@@ -63,4 +63,11 @@ public class SearchLog {
     public void setLogName(String logName) {
         this.logName = logName;
     }
+
+    public List<String> appendLogDetails(List<String> results, String text) {
+        logSearch(text);
+        results.add("\nLogged in: " + getLogName());
+        return results;
+    }
+
 }
