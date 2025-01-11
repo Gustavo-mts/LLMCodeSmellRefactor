@@ -43,6 +43,11 @@ public class SearchLog {
         isLocked = locked;
     }
 
+    public void logSearch(String text) {
+        this.searchHistory.add(text);
+        this.numUsages++;
+    }
+
     public Integer getNumUsages() {
         return numUsages;
     }
