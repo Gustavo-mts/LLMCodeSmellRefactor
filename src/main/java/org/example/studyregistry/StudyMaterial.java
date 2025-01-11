@@ -3,6 +3,7 @@ import org.example.studymaterial.AudioReference;
 import org.example.studymaterial.Reference;
 import org.example.studymaterial.TextReference;
 import org.example.studymaterial.VideoReference;
+import org.example.studysearch.SearchLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,4 +84,10 @@ public class StudyMaterial{
         return response;
     }
 
+    public List<String> searchWithLog(String text, SearchLog searchLog) {
+        List<String> results = searchInMaterials(text);
+        searchLog.logSearch(text);
+        results.add("\nLogged in: " + searchLog.getLogName());
+        return results;
+    }
 }

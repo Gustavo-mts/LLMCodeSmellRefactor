@@ -37,6 +37,13 @@ public class LeitnerSystem extends StudyMethod{
         boxes = new ArrayList<>(Arrays.asList(new Box(), new Box(), new Box(), new Box(), new Box()));
     }
 
+    public String getRandomCardFromBox() {
+        String response = "";
+        response += getMethodName();
+        response += getRandomCard(boxes);
+        return response;
+    }
+
     public List<Box> getBoxes() {
         return boxes;
     }
