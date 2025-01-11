@@ -98,8 +98,9 @@ public class HabitTracker {
     }
 
     public List<LocalDateTime> getHabitRecords(Integer id) {
-        return this.tracker.get(id);
+        return tracker.getOrDefault(id, new ArrayList<>());
     }
+
 
     public List<String> searchInHabits(String search){
         List<String> habits = new ArrayList<>();
@@ -110,5 +111,23 @@ public class HabitTracker {
         }
         return habits;
     }
+
+    public String habitDateViewAll() {
+        StringBuilder response = new StringBuilder();
+        for (Habit habit : habits) {
+            response.append("[ Habit: ")
+                    .append(habit.getName())
+                    .append(". Records: ");
+            List<LocalDateTime> records = tracker.get(habit.getId());
+            if (records != null) {
+                for (LocalDateTime record : records) {
+                    response.append(formatHabitDate(record)).append(", ");
+                }
+            }
+            response.append("]");
+        }
+        return response.toString();
+    }
+
 
 }
