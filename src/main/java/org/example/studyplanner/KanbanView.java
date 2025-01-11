@@ -74,48 +74,54 @@ public class KanbanView {
         }
     }
 
-    public String kanbanView() throws Exception {
-        try{
+    public class KanbanMaterialFormatter {
+        private Map<State, List<PlannerMaterial>> kanban;
 
-            if(kanban.isEmpty()){
-                throw new Exception("No material found");
-            }
+        public KanbanMaterialFormatter(Map<State, List<PlannerMaterial>> kanban) {
+            this.kanban = kanban;
+        }
+
+        public String formatMaterials() {
             StringBuilder sb = new StringBuilder();
-            sb.append("[ Material ToDo: ");
-            sb.append(System.lineSeparator());
 
-            if(kanban.get(State.TODO).isEmpty()){
-                sb.append("No material found");
-            } else {
-                for(PlannerMaterial material : kanban.get(State.TODO)){
-                    sb.append(", ").append(material.toString());
-                }
-            }
-            sb.append(System.lineSeparator());
-            sb.append("Material in progress:");
-            sb.append(System.lineSeparator());
-            if(kanban.get(State.DOING).isEmpty()){
-                sb.append("No material found");
-            } else {
-                for(PlannerMaterial material : kanban.get(State.DOING)){
-                    sb.append(", ").append(material.toString());
-                }
-            }
-            sb.append(System.lineSeparator());
-            sb.append("Material completed:");
-            sb.append(System.lineSeparator());
-            if(kanban.get(State.DONE).isEmpty()){
-                sb.append("No material found");
-            } else {
-                for(PlannerMaterial material : kanban.get(State.DONE)){
-                    sb.append(", ").append(material.toString());
-                }
-            }
+            appendStateMaterials(sb, State.TODO, "Material ToDo");
+            appendStateMaterials(sb, State.DOING, "Material in progress");
+            appendStateMaterials(sb, State.DONE, "Material completed");
+
             sb.append("]");
             return sb.toString();
-        } catch (Exception e){
+        }
+
+        private void appendStateMaterials(StringBuilder sb, State state, String stateLabel) {
+            sb.append(stateLabel);
+            sb.append(System.lineSeparator());
+
+            if (kanban.get(state).isEmpty()) {
+                sb.append("No material found");
+            } else {
+                for (PlannerMaterial material : kanban.get(state)) {
+                    sb.append(", ").append(material.toString());
+                }
+            }
+
+            sb.append(System.lineSeparator());
+        }
+    }
+
+    public String kanbanView() throws Exception {
+        try {
+            if (kanban.isEmpty()) {
+                throw new Exception("No material found");
+            }
+
+            KanbanMaterialFormatter formatter = new KanbanMaterialFormatter(kanban);
+            return formatter.formatMaterials();
+
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
+
+
 
 }
