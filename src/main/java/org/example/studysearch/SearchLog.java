@@ -70,4 +70,10 @@ public class SearchLog {
         return results;
     }
 
+    public List<String> addLogDetailsToResults(List<String> results, String text) {
+        logSearch(text);
+        results.add("\nLogged in: " + getLogName());
+        return results;
+    }
+
 }

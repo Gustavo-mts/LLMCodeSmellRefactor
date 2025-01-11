@@ -22,14 +22,8 @@ public class RegistrySearch implements Search<String>{
     }
 
     private List<String> handleRegistrySearch(String text) {
-        SearchCoordinator coordinator = new SearchCoordinator();
-        List<String> results = coordinator.aggregateSearchResults(text);
-
-        // Delegate logging to SearchLog
-        this.searchLog.logSearch(text);
-
-        results.add("\nLogged in: " + this.searchLog.getLogName());
-        return results;
+        SearchCoordinator coordinator = new SearchCoordinator(this.searchLog);
+        return coordinator.aggregateSearchResultsWithLog(text);
     }
 
 }

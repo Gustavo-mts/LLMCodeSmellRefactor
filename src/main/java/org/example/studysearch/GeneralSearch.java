@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GeneralSearch implements Search<String> {
     private SearchLog searchLog = new SearchLog("General Search");
-    private SearchCoordinator searchCoordinator = new SearchCoordinator();
+    private SearchCoordinator searchCoordinator = new SearchCoordinator(searchLog);
 
     public GeneralSearch() {}
 

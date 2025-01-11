@@ -11,6 +11,12 @@ import java.util.List;
 
 public class SearchCoordinator {
 
+    private final SearchLog searchLog;
+
+    public SearchCoordinator(SearchLog searchLog) {
+        this.searchLog = searchLog;
+    }
+
     public List<String> handleSearch(String text) {
         List<String> results = new ArrayList<>();
         results.addAll(CardManager.getCardManager().searchInCards(text));
@@ -28,5 +34,16 @@ public class SearchCoordinator {
         results.addAll(TodoTracker.getInstance().searchInTodos(text));
         results.addAll(StudyTaskManager.getStudyTaskManager().searchInRegistries(text));
         return results;
+    }
+
+    public List<String> aggregateSearchResultsWithLog(String text) {
+        List<String> results = new ArrayList<>();
+        results.addAll(CardManager.getCardManager().searchInCards(text));
+        results.addAll(HabitTracker.getHabitTracker().searchInHabits(text));
+        results.addAll(TodoTracker.getInstance().searchInTodos(text));
+        results.addAll(StudyTaskManager.getStudyTaskManager().searchInRegistries(text));
+
+        // Add log details
+        return searchLog.addLogDetailsToResults(results, text);
     }
 }
