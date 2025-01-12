@@ -109,15 +109,34 @@ public class StudyRegistryController {
         studyTaskManager.addRegistry(goal);
     }
 
-    private void editAudio(AudioReference audioReference){
+    private void editAudio(AudioReference audioReference) {
         handleMethodHeader("(Audio Edit)");
-        System.out.println("Type the following info:  AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
+        System.out.println("Type the following info: AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
                 "String title, String description, String link, String accessRights, String license, String language, int rating, " +
                 "int viewCount, int shareCount \n");
-        AudioReference.AudioQuality quality =AudioReference.audioQualityAdapter(getInput());
-        audioReference.editAudio(quality, Boolean.parseBoolean(getInput()), getInput(), getInput(), getInput(), getInput(),
-                getInput(), getInput(), Integer.parseInt(getInput()), Integer.parseInt(getInput()), Integer.parseInt(getInput()));
+
+        // Collect user inputs
+        AudioReference.AudioQuality quality = AudioReference.audioQualityAdapter(getInput());
+        boolean isDownloadable = Boolean.parseBoolean(getInput());
+        String title = getInput();
+        String description = getInput();
+        String link = getInput();
+        String accessRights = getInput();
+        String license = getInput();
+        String language = getInput();
+        int rating = Integer.parseInt(getInput());
+        int viewCount = Integer.parseInt(getInput());
+        int shareCount = Integer.parseInt(getInput());
+
+        // Create the AudioMetadata object using values from the inputs
+        AudioReference.AudioMetadata metadata = audioReference.new AudioMetadata(
+                title, description, link, accessRights, license, language, rating, viewCount, shareCount, isDownloadable);
+
+        // Call the editAudio method with the audioQuality and metadata
+        audioReference.editAudio(quality, metadata);
     }
+
+
 
     private AudioReference addAudioReference(){
         handleMethodHeader("(Audio Reference Creation)");
