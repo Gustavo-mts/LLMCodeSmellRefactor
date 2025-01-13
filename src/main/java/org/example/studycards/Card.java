@@ -1,6 +1,6 @@
 package org.example.studycards;
 
-public class Card {
+public final class Card {
     private String question;
     private String answer;
 
@@ -13,12 +13,16 @@ public class Card {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
     public String getAnswer() {
         return answer;
+    }
+
+    public Card withEdit(String newQuestion, String newAnswer) {
+        return new Card(newQuestion, newAnswer);
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     public void setAnswer(String answer) {
