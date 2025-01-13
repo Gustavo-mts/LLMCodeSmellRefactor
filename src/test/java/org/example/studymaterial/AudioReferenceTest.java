@@ -26,12 +26,12 @@ class AudioReferenceTest {
     @Order(1)
     @DisplayName("Edit Audio String Properties Adapter Test")
     void editAudioStringPropertiesAdapter() {
-        assertEquals("AccessRights Test", audioReference.getAccessRights());
-        assertEquals("Description Test", audioReference.getDescription());
-        assertEquals("Language Test", audioReference.getLanguage());
-        assertEquals("License Test", audioReference.getLicense());
-        assertEquals("Title Test", audioReference.getTitle());
-        assertEquals("Link Test", audioReference.getLink());
+        assertEquals("AccessRights Test", audioReference.fetchAccessRights());
+        assertEquals("Description Test", audioReference.fetchDescription());
+        assertEquals("Language Test", audioReference.fetchLanguage());
+        assertEquals("License Test", audioReference.fetchLicense());
+        assertEquals("Title Test", audioReference.fetchTitle());
+        assertEquals("Link Test", audioReference.fetchLink());
 
     }
 
@@ -40,10 +40,10 @@ class AudioReferenceTest {
     @DisplayName("Edit Audio Integer, Boolean And Quality Properties Adapter Test")
     void editAudioIntegerBooleanQualityAdapter() {
         assertEquals(AudioReference.AudioQuality.LOW, audioReference.getAudioQuality());
-        assertEquals(2000, audioReference.getViewCount());
-        assertEquals(500, audioReference.getShareCount());
-        assertEquals(10, audioReference.getRating());
-        assertTrue(audioReference.getIsDownloadable());
+        assertEquals(2000, audioReference.fetchViewCount());
+        assertEquals(500, audioReference.fetchShareCount());
+        assertEquals(10, audioReference.fetchRating());
+        assertTrue(audioReference.checkIfDownloadable());
     }
 
     public void changeEditTest(){
@@ -58,12 +58,12 @@ class AudioReferenceTest {
     @DisplayName("Change Edit Audio String Properties Adapter Test")
     void changeEditAudioIntegerAndBooleanAdapter() {
         changeEditTest();
-        assertEquals("Title2 Test", audioReference.getTitle());
-        assertEquals("Description2 Test", audioReference.getDescription());
-        assertEquals("Link2 Test", audioReference.getLink());
-        assertEquals("AccessRights2 Test", audioReference.getAccessRights());
-        assertEquals("License2 Test", audioReference.getLicense());
-        assertEquals("Language2 Test", audioReference.getLanguage());
+        assertEquals("Title2 Test", audioReference.fetchTitle());
+        assertEquals("Description2 Test", audioReference.fetchDescription());
+        assertEquals("Link2 Test", audioReference.fetchLink());
+        assertEquals("AccessRights2 Test", audioReference.fetchAccessRights());
+        assertEquals("License2 Test", audioReference.fetchLicense());
+        assertEquals("Language2 Test", audioReference.fetchLanguage());
     }
 
     @Test
@@ -72,9 +72,9 @@ class AudioReferenceTest {
     void changeEditAudioIntegerBooleanQualityAdapter() {
         changeEditTest();
         assertEquals(AudioReference.AudioQuality.VERY_HIGH, audioReference.getAudioQuality());
-        assertEquals(4000, audioReference.getViewCount());
-        assertEquals(1000, audioReference.getShareCount());
-        assertEquals(20, audioReference.getRating());
-        assertFalse(audioReference.getIsDownloadable());
+        assertEquals(4000, audioReference.fetchViewCount());
+        assertEquals(1000, audioReference.fetchShareCount());
+        assertEquals(20, audioReference.fetchRating());
+        assertFalse(audioReference.checkIfDownloadable());
     }
 }

@@ -17,31 +17,31 @@ class ReferenceTest {
     @DisplayName("Set Title Test")
     @Order(1)
     void setTitle() {
-        this.tReference.setTitle("Book 2");
-        assertEquals("Book 2", this.tReference.getTitle());
+        this.tReference.updateTitle("Book 2");
+        assertEquals("Book 2", this.tReference.fetchTitle());
     }
 
     @Test
     @DisplayName("Get Title Test")
     @Order(2)
     void getTitle() {
-        assertEquals("Book", this.tReference.getTitle());
+        assertEquals("Book", this.tReference.fetchTitle());
     }
 
     @Test
     @DisplayName("Set Description Test")
     @Order(3)
     void setDescription() {
-        this.tReference.setDescription("A short book");
-        assertEquals("A short book", this.tReference.getDescription());
+        this.tReference.updateDescription("A short book");
+        assertEquals("A short book", this.tReference.fetchDescription());
     }
 
     @Test
     @DisplayName("Get Description Test")
     @Order(4)
     void getDescription() {
-        assertNull(this.tReference.getDescription());
-        this.tReference.setDescription("A long description");
-        assertEquals("A long description", this.tReference.getDescription());
+        assertNull(this.tReference.fetchDescription());
+        this.tReference.updateDescription("A long description");
+        assertEquals("A long description", this.tReference.fetchDescription());
     }
 }

@@ -19,29 +19,29 @@ class TaskTest {
     @Order(1)
     @DisplayName("Get Title Test")
     void getTitle() {
-        assertEquals("Task", task.getTitle());
+        assertEquals("Task", task.fetchTitle());
     }
 
     @Test
     @Order(1)
     @DisplayName("Set Title Test")
     void setTitle() {
-        task.setTitle("Task");
-        assertEquals("Task", task.getTitle());
+        task.updateTitle("Task");
+        assertEquals("Task", task.fetchTitle());
     }
 
     @Test
     @Order(1)
     @DisplayName("Get Description Test")
     void getDescription() {
-        assertEquals("Task to do", task.getDescription());
+        assertEquals("Task to do", task.fetchDescription());
     }
 
     @Test
     @Order(1)
     @DisplayName("Set Description Test")
     void setDescription() {
-        task.setDescription("Task");
-        assertEquals("Task", task.getDescription());
+        task.updateDescription("Task");
+        assertEquals("Task", task.fetchDescription());
     }
 }

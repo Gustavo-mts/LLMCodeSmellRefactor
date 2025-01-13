@@ -230,18 +230,14 @@ public class StudyRegistryController {
         studyTaskManager.addRegistry(goal);
     }
 
-    private void editAudio(AudioReference audioReference) {
+    private void editAudio(AudioReference audioReference){
         handleMethodHeader("(Audio Edit)");
-        printAudioInstructions();
-
-        // Collect user inputs using a helper method
-        AudioReference.AudioMetadata metadata = collectAudioMetadata();
-
-        // Collect AudioQuality
-        AudioReference.AudioQuality quality = AudioReference.audioQualityAdapter(getInput());
-
-        // Call the editAudio method with the audioQuality and metadata
-        audioReference.editAudio(quality, metadata);
+        System.out.println("Type the following info:  AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
+                "String title, String description, String link, String accessRights, String license, String language, int rating, " +
+                "int viewCount, int shareCount \n");
+        AudioReference.AudioQuality quality =AudioReference.audioQualityAdapter(getInput());
+        audioReference.editAudio(quality, Boolean.parseBoolean(getInput()), getInput(), getInput(), getInput(), getInput(),
+                getInput(), getInput(), Integer.parseInt(getInput()), Integer.parseInt(getInput()), Integer.parseInt(getInput()));
     }
 
     // Extracted method for printing instructions
@@ -251,22 +247,6 @@ public class StudyRegistryController {
                 "int viewCount, int shareCount \n");
     }
 
-    // Extracted method for collecting audio metadata
-    private AudioReference.AudioMetadata collectAudioMetadata() {
-        String title = getTitle();
-        String description = getDescription();
-        String link = getLink();
-        String accessRights = getAccessRights();
-        String license = getLicense();
-        String language = getLanguage();
-        boolean isDownloadable = getIsDownloadable();
-        AudioMetrics metrics = getAudioMetrics();
-
-        // Create and return the AudioMetadata object
-        return new AudioReference.AudioMetadata(
-                title, description, link, accessRights, license, language,
-                metrics.getRating(), metrics.getViewCount(), metrics.getShareCount(), isDownloadable);
-    }
 
     // Extracted method to group metrics-related inputs
     private AudioMetrics getAudioMetrics() {
