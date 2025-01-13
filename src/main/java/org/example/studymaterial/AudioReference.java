@@ -32,7 +32,7 @@ public class AudioReference extends Reference {
     }
 
     // Nested class for AudioMetadata
-    public class AudioMetadata {
+    public static class AudioMetadata {
         private String title;
         private String description;
         private String link;

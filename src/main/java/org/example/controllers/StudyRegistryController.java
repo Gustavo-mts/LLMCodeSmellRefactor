@@ -5,12 +5,10 @@ import org.example.studymaterial.Reference;
 import org.example.studymaterial.TextReference;
 import org.example.studymaterial.VideoReference;
 import org.example.studyregistry.*;
-
+import org.example.studyregistry.StudyPlan.StepDetails;
+import org.example.studyregistry.StudyPlan.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.controllers.MainController.getInput;
 import static org.example.controllers.MainController.validateInput;
@@ -83,15 +81,113 @@ public class StudyRegistryController {
         return plan;
     }
 
-    private void handleSetSteps(StudyPlan studyPlan){
+    private void handleSetSteps(StudyPlan studyPlan) {
         handleMethodHeader("(Study Plan Edit)");
+        displayInstructions();
+
+        // Collect all inputs using a helper method
+        List<String> inputs = collectInputs();
+
+        // Create StepDetails object
+        StepDetails details = createStepDetails(inputs);
+
+        // Call assignSteps with the new StepDetails object
+        studyPlan.assignSteps(details);
+    }
+
+    // Extracted method for creating StepDetails
+    private StepDetails createStepDetails(List<String> inputs) {
+        Integer numberOfSteps = getNumberOfSteps(inputs);
+        boolean isImportant = getIsImportant(inputs);
+        LocalDateTime createdAT = getCreatedAt();
+        long daysFromNow = getDaysFromNow(inputs);
+        LocalDateTime endDate = calculateEndDate(createdAT, daysFromNow);
+
+        // Create StepInfo, GoalInfo, and TimeInfo instances
+        StepInfo stepInfo = createStepInfo(inputs);
+        GoalInfo goalInfo = createGoalInfo(inputs);
+        TimeInfo timeInfo = createTimeInfo(createdAT, endDate);
+
+        return new StepDetails(stepInfo, goalInfo, numberOfSteps, isImportant, timeInfo);
+    }
+
+// Extracted methods for parsing inputs and calculating values
+
+    private Integer getNumberOfSteps(List<String> inputs) {
+        return Integer.parseInt(inputs.get(8));
+    }
+
+    private boolean getIsImportant(List<String> inputs) {
+        return Boolean.parseBoolean(inputs.get(9));
+    }
+
+    private LocalDateTime getCreatedAt() {
+        return LocalDateTime.now();
+    }
+
+    private long getDaysFromNow(List<String> inputs) {
+        return Long.parseLong(inputs.get(10));
+    }
+
+    private LocalDateTime calculateEndDate(LocalDateTime createdAT, long daysFromNow) {
+        return createdAT.plusDays(daysFromNow);
+    }
+
+    // Move the instruction display logic to a separate method
+    private void displayInstructions() {
         System.out.println("Type the following info: String firstStep, String resetStudyMechanism, String consistentStep, " +
                 "String seasonalSteps, String basicSteps, String mainObjectiveTitle, String mainGoalTitle, String mainMaterialTopic, " +
-                "String mainTask, @NotNull  Integer numberOfSteps, boolean isImportant. " +
+                "String mainTask, @NotNull Integer numberOfSteps, boolean isImportant. " +
                 "The Date to start is today, the date to end is x days from now, type the quantity of days\n");
-        LocalDateTime createdAT = LocalDateTime.now();
-        studyPlan.assignSteps(getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(),
-                Integer.parseInt(getInput()), Boolean.parseBoolean(getInput()), createdAT, createdAT.plusDays(Long.parseLong(getInput())));
+    }
+
+    // Move method to collect all inputs into a helper method
+    private List<String> collectInputs() {
+        List<String> inputNames = getInputNames();
+        List<String> inputs = new ArrayList<>();
+        for (String inputName : inputNames) {
+            inputs.add(collectInput(inputName));
+        }
+        return inputs;
+    }
+
+    private List<String> getInputNames() {
+        return Arrays.asList(
+                "firstStep",
+                "resetStudyMechanism",
+                "consistentStep",
+                "seasonalSteps",
+                "basicSteps",
+                "mainObjectiveTitle",
+                "mainGoalTitle",
+                "mainMaterialTopic",
+                "mainTask",
+                "numberOfSteps",
+                "isImportant",
+                "daysFromNow"
+        );
+    }
+
+
+    // Move logic of collecting input into a single method to reduce code duplication
+    private String collectInput(String fieldName) {
+        System.out.println("Please enter " + fieldName + ": ");
+        return getInput();
+    }
+
+    // Move the StepInfo object creation logic to a separate method
+    private StepInfo createStepInfo(List<String> inputs) {
+        return new StepInfo(inputs.get(0), inputs.get(1), inputs.get(2), inputs.get(3), inputs.get(4));
+    }
+
+    // Move the GoalInfo object creation logic to a separate method
+    private GoalInfo createGoalInfo(List<String> inputs) {
+        return new GoalInfo(inputs.get(5), inputs.get(6), inputs.get(7), inputs.get(8));
+    }
+
+    // Move the TimeInfo object creation logic to a separate method
+    private TimeInfo createTimeInfo(LocalDateTime createdAT, LocalDateTime endDate) {
+        return new TimeInfo(createdAT, endDate);
     }
 
     private StudyGoal getStudyGoalInfo(){
@@ -111,32 +207,116 @@ public class StudyRegistryController {
 
     private void editAudio(AudioReference audioReference) {
         handleMethodHeader("(Audio Edit)");
-        System.out.println("Type the following info: AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
-                "String title, String description, String link, String accessRights, String license, String language, int rating, " +
-                "int viewCount, int shareCount \n");
+        printAudioInstructions();
 
-        // Collect user inputs
+        // Collect user inputs using a helper method
+        AudioReference.AudioMetadata metadata = collectAudioMetadata();
+
+        // Collect AudioQuality
         AudioReference.AudioQuality quality = AudioReference.audioQualityAdapter(getInput());
-        boolean isDownloadable = Boolean.parseBoolean(getInput());
-        String title = getInput();
-        String description = getInput();
-        String link = getInput();
-        String accessRights = getInput();
-        String license = getInput();
-        String language = getInput();
-        int rating = Integer.parseInt(getInput());
-        int viewCount = Integer.parseInt(getInput());
-        int shareCount = Integer.parseInt(getInput());
-
-        // Create the AudioMetadata object using values from the inputs
-        AudioReference.AudioMetadata metadata = audioReference.new AudioMetadata(
-                title, description, link, accessRights, license, language, rating, viewCount, shareCount, isDownloadable);
 
         // Call the editAudio method with the audioQuality and metadata
         audioReference.editAudio(quality, metadata);
     }
 
+    // Extracted method for printing instructions
+    private void printAudioInstructions() {
+        System.out.println("Type the following info: AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
+                "String title, String description, String link, String accessRights, String license, String language, int rating, " +
+                "int viewCount, int shareCount \n");
+    }
 
+    // Extracted method for collecting audio metadata
+    private AudioReference.AudioMetadata collectAudioMetadata() {
+        String title = getTitle();
+        String description = getDescription();
+        String link = getLink();
+        String accessRights = getAccessRights();
+        String license = getLicense();
+        String language = getLanguage();
+        boolean isDownloadable = getIsDownloadable();
+        AudioMetrics metrics = getAudioMetrics();
+
+        // Create and return the AudioMetadata object
+        return new AudioReference.AudioMetadata(
+                title, description, link, accessRights, license, language,
+                metrics.getRating(), metrics.getViewCount(), metrics.getShareCount(), isDownloadable);
+    }
+
+    // Extracted method to group metrics-related inputs
+    private AudioMetrics getAudioMetrics() {
+        int rating = Integer.parseInt(getInput());
+        int viewCount = Integer.parseInt(getInput());
+        int shareCount = Integer.parseInt(getInput());
+
+        return new AudioMetrics(rating, viewCount, shareCount);
+    }
+
+    // AudioMetrics class to encapsulate related fields
+    private static class AudioMetrics {
+        private int rating;
+        private int viewCount;
+        private int shareCount;
+
+        public AudioMetrics(int rating, int viewCount, int shareCount) {
+            this.rating = rating;
+            this.viewCount = viewCount;
+            this.shareCount = shareCount;
+        }
+
+        public int getRating() {
+            return rating;
+        }
+
+        public int getViewCount() {
+            return viewCount;
+        }
+
+        public int getShareCount() {
+            return shareCount;
+        }
+    }
+
+// Extracted methods for collecting individual inputs
+    private String getTitle() {
+        return getInput();
+    }
+
+    private String getDescription() {
+        return getInput();
+    }
+
+    private String getLink() {
+        return getInput();
+    }
+
+    private String getAccessRights() {
+        return getInput();
+    }
+
+    private String getLicense() {
+        return getInput();
+    }
+
+    private String getLanguage() {
+        return getInput();
+    }
+
+    private boolean getIsDownloadable() {
+        return Boolean.parseBoolean(getInput());
+    }
+
+    private int getRating() {
+        return Integer.parseInt(getInput());
+    }
+
+    private int getViewCount() {
+        return Integer.parseInt(getInput());
+    }
+
+    private int getShareCount() {
+        return Integer.parseInt(getInput());
+    }
 
     private AudioReference addAudioReference(){
         handleMethodHeader("(Audio Reference Creation)");
@@ -190,27 +370,54 @@ public class StudyRegistryController {
     }
 
     private void getWeekInfo() {
-        System.out.println("(Study Task Manager Week Set Up) Type the following info:");
-        System.out.println("1. Plan Name");
-        System.out.println("2. Objective Title");
-        System.out.println("3. Objective Description");
-        System.out.println("4. Material Topic");
-        System.out.println("5. Material Format");
-        System.out.println("6. Goal");
-        System.out.println("7. Reminder Title");
-        System.out.println("8. Reminder Description");
-        System.out.println("9. Main Task Title");
-        System.out.println("10. Main Habit");
-        System.out.println("11. Main Card Study");
+        printInstructions();
 
+        List<String> inputs = collectInputs();
+
+        // Call the handleSetUpWeek method with the collected inputs
+        studyTaskManager.handleSetUpWeek(inputs);
+    }
+
+    private void printInstructions() {
+        System.out.println("(Study Task Manager Week Set Up) Type the following info:");
+        List<String> instructions = getInstructionsList();
+        instructions.forEach(this::printInstruction);
+    }
+
+    // Extracted method to get the list of instructions
+    private List<String> getInstructionsList() {
+        return Arrays.asList(
+                "1. Plan Name",
+                "2. Objective Title",
+                "3. Objective Description",
+                "4. Material Topic",
+                "5. Material Format",
+                "6. Goal",
+                "7. Reminder Title",
+                "8. Reminder Description",
+                "9. Main Task Title",
+                "10. Main Habit",
+                "11. Main Card Study"
+        );
+    }
+
+
+    // Extracted method to handle the printing of each instruction
+    private void printInstruction(String instruction) {
+        System.out.println(instruction);
+    }
+
+
+    // Extracted method to collect the inputs
+    private List<String> collectInput() {
         List<String> inputs = new ArrayList<>();
         for (int i = 1; i <= 11; i++) {
             System.out.print("Enter input " + i + ": ");
             inputs.add(getInput());
         }
-
-        studyTaskManager.handleSetUpWeek(inputs);
+        return inputs;
     }
+
 
 
     private void handleSetUpWeek(){
