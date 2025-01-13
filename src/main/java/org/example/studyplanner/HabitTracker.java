@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.time.format.DateTimeFormatter;
+
+import org.example.studyplanner.HabitTracker.HabitDetails;
+import org.example.studyplanner.HabitTracker.TimeDetails;
 
 public class HabitTracker {
     private List<Habit> habits;
@@ -19,76 +23,95 @@ public class HabitTracker {
         return instance;
     }
 
-    private HabitTracker(){
+    private HabitTracker() {
         this.habits = new ArrayList<>();
         this.tracker = new HashMap<>();
         this.nextId = 1;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder response = new StringBuilder();
-        for (Habit habit : habits) {
-            response.append(habit.toString()).append(", ");
-        }
-        return "Habits: " + response.toString();
-    }
-
-    public Habit getHabitById(Integer id){
+    // Buscar um hábito pelo ID
+    public Habit getHabitById(Integer id) {
         return this.habits.stream()
                 .filter(habit -> Objects.equals(habit.getId(), id))
                 .findFirst().orElse(null);
     }
 
-    public List<Habit> getHabits() {
-        return this.habits;
-    }
-
-    public String formatHabitDate(LocalDateTime date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-        return date.format(formatter);
-    }
-
-    public List<Integer> getTrackerKeys(){
-        return this.tracker.keySet().stream().toList();
-    }
-
-    public int addHabit(String name, String motivation, Integer dailyMinutesDedication, Integer dailyHoursDedication, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer seconds, Boolean isConcluded) {
-        LocalTime lt = LocalTime.of(dailyHoursDedication, dailyMinutesDedication);
-        LocalDateTime startDate = LocalDateTime.of(year, month, day, hour, minute, seconds);
-        Habit habit = new Habit(name, motivation, lt, this.nextId, startDate, isConcluded);
+    // Adicionar um hábito com HabitDetails e TimeDetails
+    public int addHabit(HabitDetails details, TimeDetails timeDetails, boolean isConcluded) {
+        Habit habit = new Habit(
+                details.getName(),
+                details.getMotivation(),
+                timeDetails.getDailyDedicationTime(),
+                this.nextId,
+                timeDetails.getStartDateTime(),
+                isConcluded
+        );
         this.habits.add(habit);
-        int response = nextId;
-        this.tracker.put(nextId, new ArrayList<>());
-        this.nextId++;
-        return response;
-    }
-
-    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties, boolean isConcluded){
-        return addHabit(stringProperties.get(0), stringProperties.get(1), intProperties.get(0), intProperties.get(1), intProperties.get(2), intProperties.get(3), intProperties.get(4), intProperties.get(5), intProperties.get(6), intProperties.get(7), isConcluded);
+        tracker.put(nextId, new ArrayList<>());
+        return nextId++;
     }
 
 
+    // Adicionar hábito com valores padrão para tempo
     public int addHabit(String name, String motivation) {
-
-        Habit habit = new Habit(name, motivation, this.nextId);
-        this.habits.add(habit);
-        int response = nextId;
-        this.tracker.put(nextId, new ArrayList<>());
-        this.nextId++;
-        return response;
+        LocalDateTime now = LocalDateTime.now();
+        HabitDetails details = new HabitDetails(name, motivation);
+        TimeDetails timeDetails = new TimeDetails(
+                0, 0,
+                now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
+                now.getHour(), now.getMinute(), now.getSecond()
+        );
+        return addHabit(details, timeDetails, false);
     }
 
-    public void addHabitRecord(Integer id){
-        tracker.get(id).add(LocalDateTime.now());
+    public String habitDateViewAll() {
+        StringBuilder response = new StringBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        for (Habit habit : habits) {
+            response.append("[Habit: ").append(habit.getName()).append(", Records: ");
+            List<LocalDateTime> records = tracker.getOrDefault(habit.getId(), Collections.emptyList());
+
+            for (LocalDateTime record : records) {
+                response.append(record.format(formatter)).append(", ");
+            }
+
+            response.append("]\n");
+        }
+
+        return response.toString();
+    }
+
+
+    // Adapter para adicionar hábitos usando listas de propriedades
+    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties, boolean isConcluded) {
+        HabitDetails details = new HabitDetails(
+                stringProperties.get(0), // Nome
+                stringProperties.get(1)  // Motivação
+        );
+
+        TimeDetails timeDetails = new TimeDetails(
+                intProperties.get(0), // Minutos
+                intProperties.get(1), // Horas
+                intProperties.get(2), // Ano
+                intProperties.get(3), // Mês
+                intProperties.get(4), // Dia
+                intProperties.get(5), // Hora
+                intProperties.get(6), // Minuto
+                intProperties.get(7)  // Segundo
+        );
+
+        return addHabit(details, timeDetails, isConcluded);
+    }
+
+    public void addHabitRecord(Integer id) {
+        tracker.getOrDefault(id, new ArrayList<>()).add(LocalDateTime.now());
     }
 
     public void toggleConcludeHabit(Integer id) {
-        for (Habit habit : this.habits) {
-            if (habit.getId().equals(id)) {
-                habit.setIsConcluded(!habit.getIsConcluded());
-            }
+        Habit habit = getHabitById(id);
+        if (habit != null) {
+            habit.setIsConcluded(!habit.getIsConcluded());
         }
     }
 
@@ -98,36 +121,68 @@ public class HabitTracker {
     }
 
     public List<LocalDateTime> getHabitRecords(Integer id) {
-        return tracker.getOrDefault(id, new ArrayList<>());
+        return this.tracker.getOrDefault(id, Collections.emptyList());
     }
 
-
-    public List<String> searchInHabits(String search){
-        List<String> habits = new ArrayList<>();
+    public List<String> searchInHabits(String search) {
+        List<String> results = new ArrayList<>();
         for (Habit habit : this.habits) {
-            if (habit.getName().toLowerCase().contains(search.toLowerCase()) || habit.getMotivation().toLowerCase().contains(search.toLowerCase())) {
-                habits.add(habit.toString());
+            if (habit.getName().toLowerCase().contains(search.toLowerCase()) ||
+                    habit.getMotivation().toLowerCase().contains(search.toLowerCase())) {
+                results.add(habit.toString());
             }
         }
-        return habits;
+        return results;
     }
 
-    public String habitDateViewAll() {
-        StringBuilder response = new StringBuilder();
-        for (Habit habit : habits) {
-            response.append("[ Habit: ")
-                    .append(habit.getName())
-                    .append(". Records: ");
-            List<LocalDateTime> records = tracker.get(habit.getId());
-            if (records != null) {
-                for (LocalDateTime record : records) {
-                    response.append(formatHabitDate(record)).append(", ");
-                }
-            }
-            response.append("]");
+    // Classe para encapsular os detalhes do hábito
+    public static class HabitDetails {
+        private final String name;
+        private final String motivation;
+
+        public HabitDetails(String name, String motivation) {
+            this.name = name;
+            this.motivation = motivation;
         }
-        return response.toString();
+
+        public String getName() {
+            return name;
+        }
+
+        public String getMotivation() {
+            return motivation;
+        }
     }
 
+    // Classe para encapsular detalhes de tempo
+    public static class TimeDetails {
+        private final int dailyMinutesDedication;
+        private final int dailyHoursDedication;
+        private final int year;
+        private final int month;
+        private final int day;
+        private final int hour;
+        private final int minute;
+        private final int seconds;
 
+        public TimeDetails(int dailyMinutesDedication, int dailyHoursDedication, int year, int month, int day,
+                           int hour, int minute, int seconds) {
+            this.dailyMinutesDedication = dailyMinutesDedication;
+            this.dailyHoursDedication = dailyHoursDedication;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+            this.hour = hour;
+            this.minute = minute;
+            this.seconds = seconds;
+        }
+
+        public LocalTime getDailyDedicationTime() {
+            return LocalTime.of(dailyHoursDedication, dailyMinutesDedication);
+        }
+
+        public LocalDateTime getStartDateTime() {
+            return LocalDateTime.of(year, month, day, hour, minute, seconds);
+        }
+    }
 }

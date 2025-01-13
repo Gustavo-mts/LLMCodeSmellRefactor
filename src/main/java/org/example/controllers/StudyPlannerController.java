@@ -110,15 +110,37 @@ public class StudyPlannerController {
         return LocalDateTime.of(year, month, day, hour, minute, seconds);
     }
 
-    private void handleAddHabit(){
+    private void handleAddHabit() {
         System.out.println("Separate the input with enter, type: name, motivation, daily Minutes Dedication, daily Hours Dedication, year, month, day, hour, minute, seconds");
+
+        HabitTracker.HabitDetails details = getHabitDetailsFromInput();
+        HabitTracker.TimeDetails timeDetails = getTimeDetailsFromInput();
+
+        habitTracker.addHabit(details, timeDetails, false);
+    }
+
+    private HabitTracker.HabitDetails getHabitDetailsFromInput() {
         String name = Objects.requireNonNull(this.getInput().trim());
         String motivation = Objects.requireNonNull(this.getInput().trim());
-        Integer dailyMinutesDedication = Integer.parseInt(Objects.requireNonNull(this.getInput().trim()));
-        Integer dailyHoursDedication = Integer.parseInt(Objects.requireNonNull(this.getInput().trim()));
-        LocalDateTime start =  handleGetStartDate();
-        habitTracker.addHabit(name, motivation, dailyMinutesDedication, dailyHoursDedication, start.getYear(), start.getMonthValue(), start.getDayOfMonth(), start.getHour(), start.getMinute(), start.getSecond(), false);
+        return new HabitTracker.HabitDetails(name, motivation);
     }
+
+    private HabitTracker.TimeDetails getTimeDetailsFromInput() {
+        int dailyMinutesDedication = Integer.parseInt(Objects.requireNonNull(this.getInput().trim()));
+        int dailyHoursDedication = Integer.parseInt(Objects.requireNonNull(this.getInput().trim()));
+        int year = Integer.parseInt(this.getInput());
+        int month = Integer.parseInt(this.getInput());
+        int day = Integer.parseInt(this.getInput());
+        int hour = Integer.parseInt(this.getInput());
+        int minute = Integer.parseInt(this.getInput());
+        int seconds = Integer.parseInt(this.getInput());
+        return new HabitTracker.TimeDetails(
+                dailyMinutesDedication, dailyHoursDedication,
+                year, month, day, hour, minute, seconds
+        );
+    }
+
+
 
     private String viewToDoHeader(){
         return "Todos and latest usages:";
@@ -194,7 +216,7 @@ public class StudyPlannerController {
     private void handleViewTimeline() throws Exception {
         try{
             handleMethodHeader("Timeline view: ");
-            System.out.println(timelineView.habitDateViewAll(habitTracker));
+            System.out.println(habitTracker.habitDateViewAll());
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
