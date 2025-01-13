@@ -13,91 +13,110 @@ public abstract class Reference {
     private int downloadCount;
     private int shareCount;
 
-    public void setTitle(String title) {
-        this.title = title;
+    // Substituindo o getter e setter por um método específico
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
     }
 
-    public String getTitle() {
+    public String fetchTitle() {
         return title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    // Substituindo o getter e setter por um método específico
+    public void updateDescription(String newDescription) {
+        this.description = newDescription;
     }
 
-    public String getDescription() {
+    public String fetchDescription() {
         return description;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    // Substituindo o getter e setter por um método específico
+    public void updateLink(String newLink) {
+        this.link = newLink;
     }
 
-    public String getLink() {
+    public String fetchLink() {
         return link;
     }
 
-    public String getAccessRights() {
+    // Substituindo o getter e setter por um método específico
+    public void updateAccessRights(String newAccessRights) {
+        this.accessRights = newAccessRights;
+    }
+
+    public String fetchAccessRights() {
         return accessRights;
     }
 
-    public void setAccessRights(String accessRights) {
-        this.accessRights = accessRights;
+    // Substituindo o getter e setter por um método específico
+    public void updateLicense(String newLicense) {
+        this.license = newLicense;
     }
 
-    public String getLicense() {
+    public String fetchLicense() {
         return license;
     }
 
-    public void setLicense(String license) {
-        this.license = license;
+    // Substituindo o getter e setter por um método específico
+    public void setDownloadability(boolean downloadable) {
+        this.isDownloadable = downloadable;
     }
 
-    public boolean getIsDownloadable() {
+    public boolean checkIfDownloadable() {
         return isDownloadable;
     }
 
-    public void setDownloadable(boolean downloadable) {
-        isDownloadable = downloadable;
+    // Substituindo o getter e setter por um método específico
+    public void updateRating(int newRating) {
+        this.rating = newRating;
     }
 
-    public int getRating() {
+    public int fetchRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    // Substituindo o getter e setter por um método específico
+    public void updateLanguage(String newLanguage) {
+        this.language = newLanguage;
     }
 
-    public String getLanguage() {
+    public String fetchLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    // Substituindo o getter e setter por um método específico
+    public void updateViewCount(int newViewCount) {
+        this.viewCount = newViewCount;
     }
 
-    public int getViewCount() {
+    public int fetchViewCount() {
         return viewCount;
     }
 
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
+    // Substituindo o getter e setter por um método específico
+    public void updateDownloadCount(int newDownloadCount) {
+        this.downloadCount = newDownloadCount;
     }
 
-    public int getDownloadCount() {
+    public int fetchDownloadCount() {
         return downloadCount;
     }
 
-    public void setDownloadCount(int downloadCount) {
-        this.downloadCount = downloadCount;
+    // Substituindo o getter e setter por um método específico
+    public void updateShareCount(int newShareCount) {
+        this.shareCount = newShareCount;
     }
 
-    public int getShareCount() {
+    public int fetchShareCount() {
         return shareCount;
     }
 
-    public void setShareCount(int shareCount) {
-        this.shareCount = shareCount;
-    }
+    public abstract String getTitle();
+
+    public abstract String getDescription();
+
+    public abstract void setTitle(String s);
+
+    public abstract void setDescription(String a_short_book);
 }
