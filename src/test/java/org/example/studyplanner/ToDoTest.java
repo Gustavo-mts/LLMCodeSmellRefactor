@@ -30,21 +30,21 @@ class ToDoTest {
     @DisplayName("Get Id Test")
     @Order(1)
     void getId() {
-        assertEquals(this.todo.getId(), 1);
+        assertEquals(this.todo.fetchId(), 1);
     }
 
     @Test
     @DisplayName("Set Id Test")
     @Order(1)
     void setId() {
-        this.todo.setId(2);
-        assertEquals(this.todo.getId(), 2);
+        this.todo.updateId(2);
+        assertEquals(this.todo.fetchId(), 2);
     }
 
     @Test
     @DisplayName("Get Title Test")
     @Order(1)
     void getTitle() {
-        assertEquals(this.todo.getTitle(), "Task");
+        assertEquals(this.todo.fetchId(), "Task");
     }
 }

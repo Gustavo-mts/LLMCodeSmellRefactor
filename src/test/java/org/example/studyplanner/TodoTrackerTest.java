@@ -29,16 +29,16 @@ class TodoTrackerTest {
     void addToDo() {
         Integer id = todoTracker.addToDo("Test 4", "Test 4 Description", 1);
         ToDo todo = todoTracker.getToDoById(id);
-        assertEquals("Test 4", todo.getTitle());
-        assertEquals("Test 4 Description", todo.getDescription());
-        assertEquals(1, todo.getPriority());
+        assertEquals("Test 4", todo.fetchTitle());
+        assertEquals("Test 4 Description", todo.fetchDescription());
+        assertEquals(1, todo.fetchPriority());
     }
 
     void verifyTestToString(int id, String response){
         ToDo todo = todoTracker.getToDoById(id);
-        assertTrue(response.contains(todo.getTitle()));
-        assertTrue(response.contains(todo.getDescription()));
-        assertTrue(response.contains(String.valueOf("(Priority:"+todo.getPriority()+")")));
+        assertTrue(response.contains(todo.fetchTitle()));
+        assertTrue(response.contains(todo.fetchDescription()));
+        assertTrue(response.contains(String.valueOf("(Priority:"+todo.fetchPriority()+")")));
     }
 
     @Test

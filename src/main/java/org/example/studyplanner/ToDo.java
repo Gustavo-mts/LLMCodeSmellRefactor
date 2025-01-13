@@ -20,35 +20,35 @@ public class ToDo implements PlannerMaterial{
         return MessageFormat.format("[(Priority:{3}) ToDo {0}: {1}, {2}]", id, title, description, priority);
     }
 
-    public int getId() {
+    public int fetchId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void updateId(Integer id) {
         this.id = id;
     }
 
-    public String getTitle() {
+    public String fetchTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void updateitle(String title) {
         this.title = title;
     }
 
-    public String getDescription() {
+    public String fetchDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void updateDescription(String description) {
         this.description = description;
     }
 
-    public int getPriority() {
+    public int fetchPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void updatePriority(int priority) {
         this.priority = priority;
     }
 }

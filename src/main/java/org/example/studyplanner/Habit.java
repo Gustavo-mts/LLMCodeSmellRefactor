@@ -29,6 +29,9 @@ public class Habit implements PlannerMaterial{
         this.motivation = motivation;
     }
 
+    public Habit(String name, String motivation, Integer dailyMinutesDedication, Integer dailyHoursDedication, LocalDateTime startDate, boolean isConcluded) {
+    }
+
     @Override
     public String toString() {
         String status = isConcluded ? "Concluded" : "Not Concluded";

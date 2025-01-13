@@ -43,7 +43,7 @@ public class TodoTracker {
         String todoInfo = toDo.toString();
         str.append(todoInfo).append("\n");
 
-        Integer id = toDo.getId();
+        Integer id = toDo.fetchId();
         List<LocalDateTime> todosDate = this.tracker.get(id);
         appendTodoDates(str, todosDate);
     }
@@ -78,7 +78,7 @@ public class TodoTracker {
 
     public ToDo getToDoById(Integer id) {
         for (ToDo toDo : toDos) {
-            if (toDo.getId() == id) {
+            if (toDo.fetchId() == id) {
                 return toDo;
             }
         }
@@ -89,23 +89,23 @@ public class TodoTracker {
         ToDo toAdd = new ToDo(nextId, title, description, priority);
         nextId++;
         this.toDos.add(toAdd);
-        return toAdd.getId();
+        return toAdd.fetchId();
     }
 
     public void removeToDo(Integer id) {
-        toDos.removeIf(toDo -> toDo.getId() == id);
+        toDos.removeIf(toDo -> toDo.fetchId() == id);
     }
 
     public List<ToDo> sortTodosByPriority() {
         List<ToDo> sortedToDos = new ArrayList<>(toDos);
-        sortedToDos.sort(Comparator.comparingInt(ToDo::getPriority));
+        sortedToDos.sort(Comparator.comparingInt(ToDo::fetchPriority));
         return sortedToDos;
     }
 
     public List<String> searchInTodos(String search) {
         List<String> todos = new ArrayList<>();
         for (ToDo toDo : toDos) {
-            if (toDo.getTitle().toLowerCase().contains(search.toLowerCase()) || toDo.getDescription().toLowerCase().contains(search.toLowerCase())) {
+            if (toDo.fetchTitle().toLowerCase().contains(search.toLowerCase()) || toDo.fetchDescription().toLowerCase().contains(search.toLowerCase())) {
                 todos.add(toDo.toString());
             }
         }
